@@ -1,0 +1,21 @@
+pip install pyinstaller
+
+
+pyinstaller --onefile calculadoraBinarios.py
+
+
+C:\Python311\Lib\site-packages\numpy\_pyinstaller\__pycache__\pyinstaller-smoke.cpython-311 --onefile calculadoraBinarios.py
+
+
+ao executar meu arquivo python compilado, ele gera esse erro
+
+traceback(most recent call last):
+ file "calculadoraBinarios.py" line 73, in <module>
+ file "PIL\Image.py", line 3236, in open
+fileNotFoundError: [errno 2] no such file or directory: './project/cearense.jpg'
+[28528] failed to execute script 'calculadoraBinarios' due to unhandled exeception!
+
+
+
+
+python -m PyInstaller --onefile --debug all .\calculadoraBinarios.py 

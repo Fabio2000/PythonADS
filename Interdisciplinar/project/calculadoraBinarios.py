@@ -1,124 +1,143 @@
-#tkinter biblioteca para criar a interface grafica visivel ao usuário onde ele verá a calculadora sendo renderizada
+#Biblioteca para renderização da tela em executavel(.exe)
 from tkinter import *
 import tkinter as tk
-from tkinter import ttk
+from tkinter.messagebox import showinfo
 
-#Importando canvas para image background
-from PIL import ImageTk, Image
+# #Importando canvas para image background
+#from PIL import ImageTk, Image
 
+# Função para converter um número binário para decimal
+def binario_para_decimal(binario):
+    decimal = 0
+    for i in range(len(binario)):
+        digito = int(binario[len(binario) - 1 - i])
+        decimal += digito * (2 ** i)
+    return decimal
 
-#Math serve para facilidade de chamadas das operações matemáticas
-import math
+# Função para converter um número decimal para binário
+def decimal_para_binario(decimal):
+    if decimal == 0:
+        return '0'
+    binario = ''
+    while decimal > 0:
+        resto = decimal % 2
+        binario = str(resto) + binario
+        decimal = decimal // 2
+    return binario
 
+# Função para realizar a soma de dois números binários
+def soma_binaria():
+    binario1 = entry_binario1.get()
+    binario2 = entry_binario2.get()
+    resultado = binario_para_decimal(binario1) + binario_para_decimal(binario2)
+    resultado_binario = decimal_para_binario(resultado)
+    label_resultado.config(text=resultado_binario)
 
-################# cores ###############
-co1 = "#feffff"  # white/branca
-co3 = "#38576b"  # valor
-fundo = "#e8e6e6" #branco cizentado
-co10 ="#363434" #preto  claro
+# Função para realizar a subtração de dois números binários
+def subtracao_binaria():
+    binario1 = entry_binario1.get()
+    binario2 = entry_binario2.get()
+    resultado = binario_para_decimal(binario1) - binario_para_decimal(binario2)
+    resultado_binario = decimal_para_binario(resultado)
+    label_resultado.config(text=resultado_binario)
 
+# Função para realizar a multiplicação de dois números binários
+def multiplicacao_binaria():
+    binario1 = entry_binario1.get()
+    binario2 = entry_binario2.get()
+    resultado = binario_para_decimal(binario1) * binario_para_decimal(binario2)
+    resultado_binario = decimal_para_binario(resultado)
+    label_resultado.config(text=resultado_binario)
 
-################# Config da janela #############
+# Função para realizar a divisão de dois números binários
+def divisao_binaria():
+    binario1 = entry_binario1.get()
+    binario2 = entry_binario2.get()
+    if binario_para_decimal(binario2) == 0:
+        mostrar_erro_divisao_por_zero()
+        return
+    resultado = binario_para_decimal(binario1) // binario_para_decimal(binario2)
+    resultado_binario = decimal_para_binario(resultado)
+    label_resultado.config(text=resultado_binario)
 
-janela = Tk()
-janela.title('Calculadora Cientifica')
-janela.geometry('630x145')
-janela.configure(bg=co1)
+# Função para mostrar uma mensagem de erro em caso de divisão por zero
+def mostrar_erro_divisao_por_zero():
+    showinfo('Erro', 'Divisão por zero não é suportada.')
 
-
-style = ttk.Style(janela)
-style.theme_use("clam")
-
+# Configurações da janela
+app = Tk()
+app.title('Calculadora Binária')
+app.geometry('800x300')
 
 ################ Imagem tiringa ###################
+# imagem = Image.open("./imagem/cearense.jpg")
+# imagem = imagem.resize((160, 160))  # Redimensiona a imagem para o tamanho da janela
+# imagem = ImageTk.PhotoImage(imagem)
 
-imagem = Image.open("./imagem/cearense.jpg")
-imagem = imagem.resize((160, 140))  # Redimensiona a imagem para o tamanho da janela
-imagem = ImageTk.PhotoImage(imagem)
+# label_imagem = tk.Label(app, image=imagem)
+# label_imagem.pack()
 
-label_imagem = tk.Label(janela, image=imagem)
-label_imagem.pack()
+# label_imagem.place(x=250, y=-90, relwidth=1, relheight=1)
 
-label_imagem.place(x=240, y=0, relwidth=1, relheight=1)
+# Configurações dos widgets
+#Label Texto Valor 1
+label_binario1 = Label(app, text='Digite o primeiro número binário:', font=('Arial 15 bold'))
+label_binario1.pack()
+label_binario1.place(x=0, y=5)
 
-################# Frames ####################
-
-ttk.Separator(janela, orient=HORIZONTAL).grid(row=0, columnspan=2, ipadx=280)
-
-frame_score = Frame(janela, width=478, height=56,bg=co3, pady=0, padx=0, relief="flat",)
-frame_score.grid(row=1, column=0, sticky=NW)
-
-frame_quadros = Frame(janela, width=478, height=86,bg=fundo, pady=0, padx=0, relief="flat",)
-frame_quadros.grid(row=2, column=0, sticky=NW)
+#INPUT VALOR 1
+entry_binario1 = Entry(app, borderwidth=1, relief="solid", fg="black", bg='#D3D3D3', font=('Arial 15'))
+entry_binario1.pack()
+entry_binario1.place(x=320, y=8, width=200)
 
 
-################# Funções ####################
+#Label Texto Valor 2
+label_binario2 = Label(app, text='Digite o segundo número binário:', font=('Arial 15 bold'))
+label_binario2.pack()
+label_binario2.place(x=0, y=48)
 
-def entering_values(event):
-	global all_values
-	all_values = all_values + str(event)
-	value_text.set(all_values)
+#INPUT VALOR 2
+entry_binario2 = Entry(app, borderwidth=1, relief="solid", fg="black", bg='#D3D3D3', font=('Arial 15'))
+entry_binario2.pack()
+entry_binario2.place(x=320, y=50, width=200)
 
-def binary_calculator():
-    global all_values
+#Botão de soma
+button_soma = Button(app, text='Soma', font=('Arial 15 bold'), bg='#90EE90', command=soma_binaria)
+button_soma.pack()
+button_soma.place(x=15, y=135, width=170)
 
-    binary1 = all_values.split()[0]  # Extrai o primeiro número binário
-    binary2 = all_values.split()[2]  # Extrai o segundo número binário
+#Botão de subtração
+button_subtracao = Button(app, text='Subtrair', font=('Arial 15 bold'), bg='#90EE90', command=subtracao_binaria)
+button_subtracao.pack()
+button_subtracao.place(x=210, y=135, width=170)
 
-    decimal1 = int(binary1, 2)  # Converte o primeiro número binário para decimal
-    decimal2 = int(binary2, 2)  # Converte o segundo número binário para decimal
+#Botão de multiplicação
+button_multiplicacao = Button(app, text='Multiplicar', bg='#90EE90', font=('Arial 15 bold'), command=multiplicacao_binaria)
+button_multiplicacao.pack()
+button_multiplicacao.place(x=410, y=135, width=170)
 
-    # Realiza a operação matemática desejada nos números decimais
-    if "+" in all_values:
-        result_decimal = decimal1 + decimal2
-    elif "-" in all_values:
-        result_decimal = decimal1 - decimal2
-    elif "*" in all_values:
-        result_decimal = decimal1 * decimal2
-    elif "/" in all_values:
-        result_decimal = decimal1 // decimal2
-    elif "%" in all_values:
-        result_decimal = decimal1 % decimal2
+#Botão de divisão
+button_divisao = Button(app, text='Dividir', font=('Arial 15 bold'), bg='#90EE90', command=divisao_binaria)
+button_divisao.pack()
+button_divisao.place(x=610, y=135, width=170)
 
-    result_binary = bin(result_decimal)  # Converte o resultado decimal para binário
-    value_text.set(result_binary)  # Exibe o resultado em binário na calculadora
-    all_values = ""  # Limpa a variável all_values para a próxima operação
-    
-	
+#Botão de resultado
+label_resultado_texto = Label(app, text='Resultado das operações:', font=('Arial 15 bold'))
+label_resultado_texto.place(x=80, y=200)
+label_resultado = Label(app, text='', font=('Arial 15 bold'), width=38, height=1, borderwidth=1, relief="solid", fg="black", bg='#D3D3D3')
+label_resultado.pack(padx=10, pady=10)
+label_resultado.place(x=335, y=200, width=400)
 
-def scream_clear(): 
-    global all_values
-    all_values = "" 
-    value_text.set("")
+#Função para limpar os campos de entrada e resultado
+def limpar():
+    entry_binario1.delete(0, END)
+    entry_binario2.delete(0, END)
+    label_resultado.config(text='')
+pass
 
-all_values = "" 
-value_text = StringVar()
+#Botão para limpar os valores digitados no input
+button_limpar = Button(app, text='Limpar', bg='#FFB6C1', font=('Arial 12 bold'), command=limpar)
+button_limpar.pack(padx=10, pady=10)
+button_limpar.place(x=265, y=250, width=300)
 
-################# Label ####################
-
-app_scream = Label(frame_score,width=33,height=2,textvariable = value_text , padx=7, relief="flat", anchor="e",bd=0, justify=RIGHT, font=('Arial 18 '), bg='#37474F', fg=co1)
-app_scream.place(x=0, y=0)
-
-################# Buttons ####################
-b_1 = Button(frame_quadros, text="0", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = lambda: entering_values('0'))
-b_1.place(x=0, y=1)
-b_2 = Button(frame_quadros, text="1", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = lambda: entering_values('1'))
-b_2.place(x=159, y=1)
-b_3 = Button(frame_quadros, text="+", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = lambda: entering_values('+'))
-b_3.place(x=319, y=1)
-
-b_4 = Button(frame_quadros, text="-", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = lambda: entering_values('-'))
-b_4.place(x=0, y=30)
-b_5 = Button(frame_quadros, text="*", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = lambda: entering_values('*'))
-b_5.place(x=159, y=30)
-b_6 = Button(frame_quadros, text="/", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = lambda: entering_values('/'))
-b_6.place(x=319, y=30)
-
-b_7 = Button(frame_quadros, text="%", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = lambda: entering_values('%'))
-b_7.place(x=0, y=59)
-b_8 = Button(frame_quadros, text="=", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = binary_calculator)
-b_8.place(x=159, y=59)
-b_9 = Button(frame_quadros, text="C", width=19, height=1, bg=co10, fg=fundo,font=('Arial 10 bold'),relief=RAISED, overrelief=RIDGE,command = lambda: scream_clear())
-b_9.place(x=319, y=59)
-
-janela.mainloop()
+app.mainloop()

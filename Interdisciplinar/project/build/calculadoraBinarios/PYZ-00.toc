@@ -1,0 +1,2 @@
+('C:\\Users\\frsil\\Desktop\\AulaPythonADS\\Interdisciplinar\\project\\build\\calculadoraBinarios\\PYZ-00.pyz',
+ [])
